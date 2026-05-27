@@ -19,7 +19,7 @@ st.markdown("---")
 GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1YsOWWhOpx0fUydBMX4zea63niBOISJBXb97RFvmVXHA/export?format=csv"
 
 # 2. Paste the base URL of your form (remove everything from "/viewform..." onwards)
-GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1YsOWWhOpx0fUydBMX4zea63niBOISJBXb97RFvmVXHA/edit?gid=0#gid=0/formResponse"
+GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScdGzzHMcdQBLz8vFJjwwdIEanVb5b60LBojwxpEY4101YbSg/formResponse"
 
 # 3. Paste your exact entry IDs from Step 2
 ENTRY_ID_STATE = "entry.518793903"
