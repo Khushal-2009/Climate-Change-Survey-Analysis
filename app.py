@@ -1,9 +1,9 @@
 import csv 
 import os
+import io
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import streamlit as pd_st 
 import streamlit as st
 
 st.set_page_config(page_title="Climate Change Survey & Analysis", layout="wide")
@@ -53,7 +53,7 @@ def append_to_climate_csv(state_name, factor_name, score_points, filename=FILENA
 tab1, tab2 = st.tabs(["📝 Data Entry Form", "📊 Climate Report & Analysis"])
 
 with tab1:
-    st.header("Step 1: Record Climate Metrics")
+    st.header("Record Climate Metrics")
     
     states_list = ["Maharashtra", "Tamil Nadu", "Bihar", "Himachal Pradesh"]
 
@@ -119,7 +119,7 @@ with tab1:
         st.info("💡 Please choose a state from the dropdown menu above to start the questionnaire.")
 
 with tab2:
-    st.header("Step 2: Generate Insights & Visualizations")
+    st.header("Generate Insights & Visualizations")
     
     if not os.path.exists(FILENAME) or os.path.getsize(FILENAME) == 0:
         st.warning("⚠️ No data available yet. Complete a data entry profile in the first tab to begin.")
@@ -138,7 +138,7 @@ with tab2:
                     st.error("❌ Error: The CSV file contains no data values.")
                 else:
 
-                    analysis_mode = st.radio(
+                    analysis_mode = st.selectbox(
                         "Analysis Target Mode:",
                         options=["-- Choose Analysis Mode --", "Analyze a Specific State", "Analyze and Compare All States"],
                         index=0
@@ -168,11 +168,11 @@ with tab2:
                             
                             if high_drivers:
                                 st.error(f"⚠️ **Critical Drivers of Climate Change:** {', '.join(high_drivers)}")
-                                
+
                                 if "Industrial Emissions" in high_drivers or "Fossil-Fuel Vehicles" in high_drivers:
-                                    st.caption("💡 *Interpretation:* This region shows a strong 'Urban/Industrial Footprint'. Climate change factors are heavily tied to commercial modernization, congestion, and energy demand.")
+                                    st.markdown("<div style='padding:12px; background-color:#e1f5fe; border-left:5px solid #0288d1; border-radius:4px; color:#01579b; margin-bottom:10px;'><strong>💡 Interpretation:</strong> This region shows a strong 'Urban/Industrial Footprint'. Climate change factors are heavily tied to commercial modernization, congestion, and energy demand.</div>", unsafe_allow_html=True)
                                 if "Agricultural Methane" in high_drivers or "Crop Residue Burning" in high_drivers:
-                                    st.caption("💡 *Interpretation:* This region shows a prominent 'Rural/Agrarian Footprint'. Climate pressures stem primarily from traditional agricultural practices and land management.")
+                                    st.markdown("<div style='padding:12px; background-color:#efebe9; border-left:5px solid #5d4037; border-radius:4px; color:#3e2723; margin-bottom:10px;'><strong>💡 Interpretation:</strong> This region shows a prominent 'Rural/Agrarian Footprint'. Climate pressures stem primarily from traditional agricultural practices and land management.</div>", unsafe_allow_html=True)
                             else:
                                 st.success("✅ **Critical Drivers:** None of the individual tracked elements have reached critical thresholds relative to the dataset maxima.")
                                 
@@ -199,6 +199,16 @@ with tab2:
                             plt.tight_layout()
                             st.pyplot(fig_bar)
 
+                            buffer_bar = io.BytesIO()
+                            fig_bar.savefig(buffer_bar, format='png', dpi=300)
+                            buffer_bar.seek(0)
+                            st.download_button(
+                                label="📥 Download Bar Chart Graphic",
+                                data=buffer_bar,
+                                file_name="comparative_breakdown_chart.png",
+                                mime="image/png"
+                            )
+
                         with col2:
                             factors = df['Factor'].unique().tolist()
                             num_vars = len(factors)
@@ -218,7 +228,7 @@ with tab2:
                                 
                             ax_radar.set_theta_offset(np.pi / 2)
                             ax_radar.set_theta_direction(-1)
-
+                            
                             ax_radar.set_xticks(angles[:-1])
                             ax_radar.set_xticklabels(factors, color='grey', size=9, rotation=45, ha='right')
                             
@@ -231,9 +241,19 @@ with tab2:
                             ax_radar.legend(loc='upper right', bbox_to_anchor=(1.3, 1))
                             plt.tight_layout()
                             st.pyplot(fig_radar)
+
+                            buffer_radar = io.BytesIO()
+                            fig_radar.savefig(buffer_radar, format='png', dpi=300)
+                            buffer_radar.seek(0)
+                            st.download_button(
+                                label="📥 Download Radar Chart Graphic",
+                                data=buffer_radar,
+                                file_name="environmental_impact_radar.png",
+                                mime="image/png"
+                            )
                             
                     elif analysis_mode != "-- Choose Analysis Mode --":
-                        st.info("ℹ️ Select a valid state parameters to populate comparative graphs.")
+                        st.info("ℹ️ Select valid state parameters to populate comparative graphs.")
                         
         except Exception as e:
             st.error(f"An processing anomaly occurred reading the dataset metrics: {e}")
