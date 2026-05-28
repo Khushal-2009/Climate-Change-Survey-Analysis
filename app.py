@@ -78,7 +78,7 @@ with tab1:
             for q_text, factor_name in QUESTIONS.items():
                 count += 1
                 label_suffix = " (Percentage 0-100%)" if count in [2, 4, 7] else " (Enter Raw Value)"
-                form_inputs[count] = st.number_input(label=f"Q{count}: {q_text}{label_suffix}", value=0.0, step=1.0, key=f"q_{count}")
+                form_inputs[count] = st.number_input(label=f"Q{count}: {q_text}{label_suffix}", value=None, placeholder="0.0", step=1.0, key=f"q_{count}")
             
             submit_button = st.form_submit_button(label="Submit Survey Data")
             if submit_button:
